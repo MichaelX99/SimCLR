@@ -41,10 +41,11 @@ class BottleNeckBlock(nn.Module):
         return out
 
 class ResNet(nn.Module):
-    def __init__(self, num_classes=100, width_per_group=64, input_channels=3):
+    def __init__(self, num_classes=100, width_per_group=64, input_channels=3, encoding=True):
         super(ResNet, self).__init__()
 
         self.base_width = width_per_group
+        self.encoding = encoding
         layer1 = 64
         self.conv1 = nn.Conv2d(input_channels, layer1, kernel_size=7, stride=2, padding=3,
                                bias=False)
@@ -56,7 +57,10 @@ class ResNet(nn.Module):
         self.block3 = self.make_block(input_feature_map_size=512, width1=256, width2=1024, num_blocks=6)
         self.block4 = self.make_block(input_feature_map_size=1024, width1=512, width2=2048, num_blocks=3)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(2048, num_classes)
+        
+        # If the unsupervised pretraining is happening, do not perform the last fully connected layer
+        if not self.encoding:
+            self.fc = nn.Linear(2048, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -90,6 +94,9 @@ class ResNet(nn.Module):
 
         out = self.avgpool(out)
         out = torch.flatten(out, 1)
-        out = self.fc(out)
+
+        # If the unsupervised pretraining is happening, do not perform the last fully connected layer
+        if not self.encoding:
+            out = self.fc(out)
 
         return out
