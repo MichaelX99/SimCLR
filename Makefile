@@ -9,12 +9,10 @@ build:
 	--build-arg UID=${shell id -u} --build-arg GID=${shell id -g} \
 	 -f docker/Dockerfile .
 
-# --gpus all
-
 develop: build
-	docker run \
+	docker run --gpus all \
 	-it --rm \
 	-e "TERM=xterm-256color" \
-	-v ${PWD}/src:${DOCKER_HOME}/src \
+	-v ${PWD}/simclr:${DOCKER_HOME}/simclr \
 	--name=${DOCKER_CONTAINER} \
 	${DOCKER_IMAGE}

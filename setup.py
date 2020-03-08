@@ -9,8 +9,8 @@ with open('README.md', encoding='utf-8') as f:
     long_desc = f.read()
 
 REQUIRED = [
-    #'torch',
-    #'torchvision',
+    'torch',
+    'torchvision',
 ]
 
 EXTRAS = {

@@ -11,6 +11,9 @@ RUN apt update && apt install -y software-properties-common curl && \
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
 
+RUN pip install --upgrade https://storage.googleapis.com/jax-releases/cuda102/jaxlib-0.1.40-cp37-none-linux_x86_64.whl
+RUN pip install --upgrade jax
+
 ARG UID
 ARG GID
 
